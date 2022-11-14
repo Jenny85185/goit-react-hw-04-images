@@ -1,35 +1,43 @@
-import { Component } from 'react';
+import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
 import { Backdrop, ModalWindow, ModalImage } from './Modal.styled';
 
 const modalRoot = document.querySelector('#modal-root');
 
-class Modal extends Component {
-  static propTypes = {
-    toggleModal: PropTypes.func.isRequired,
-    largeImage: PropTypes.string.isRequired,
+function Modal({ toggleModal, largeImage }) {
+  useEffect(() => {
+    const handleKeyDown = e => e.code === 'Escape' && toggleModal();
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [toggleModal]);
+
+// class Modal extends Component {
+//   static propTypes = {
+//     toggleModal: PropTypes.func.isRequired,
+//     largeImage: PropTypes.string.isRequired,
+//   };
+
+//   componentDidMount() {
+//     window.addEventListener('keydown', this.handleKeyDown);
+//   }
+
+//   componentWillUnmount() {
+//     window.removeEventListener('keydown', this.handleKeyDown);
+//   }
+
+//   handleKeyDown = e => {
+//     e.code === 'Escape' && this.props.toggleModal();
+//   };
+
+   const handleBackdropClick = e => {
+    e.target === e.currentTarget && toggleModal();
   };
 
-  componentDidMount() {
-    window.addEventListener('keydown', this.handleKeyDown);
-  }
 
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleKeyDown);
-  }
-
-  handleKeyDown = e => {
-    e.code === 'Escape' && this.props.toggleModal();
-  };
-
-  handleBackdropClick = e => {
-    e.target === e.currentTarget && this.props.toggleModal();
-  };
-
-  render() {
-    const { handleBackdropClick } = this;
-    const { largeImage } = this.props;
 
     return createPortal(
       <Backdrop onClick={handleBackdropClick}>
@@ -40,12 +48,12 @@ class Modal extends Component {
       modalRoot
     );
   }
-}
+
 
 Modal.prototypes = {
-  alt: PropTypes.string.isRequired,
+  toggleModal: PropTypes.func.isRequired,
   largeImage: PropTypes.string.isRequired,
-  onModalClick: PropTypes.func.isRequired,
+ 
 };
 
 export default Modal;
