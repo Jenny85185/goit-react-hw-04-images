@@ -51,5 +51,4 @@ Modal.prototypes = {
   toggleModal: PropTypes.func.isRequired,
   largeImage: PropTypes.string.isRequired,
 };
-
 export default Modal;
